@@ -1,23 +1,22 @@
-import functools
 import time
+import functools
 
 
 def cache(N):
-    memory = {}
+    cache_obj = {}
 
     @functools.wraps(N)
-    def check_time(*args):
+    def cache_func(*args):
         for i in args:
-            if i not in memory:
-                memory[i] = time.time()
-            elif i in memory:
-                if time.time() - memory[i] < i:
-                    print(i, memory[i])
-                else:
-                    del memory[i]
-    return check_time
-
+            if i not in cache_obj:
+                cache_obj[i] = time.time()
+            else:
+                if time.time() - cache_obj[i] > N(*args):
+                    del cache_obj[i]
+                    return f"Data name "{i}", left time range"
+        return cache_obj
+    return cache_func
 
 @cache
-def N(times):
-    return times
+def N(time):
+    return time
