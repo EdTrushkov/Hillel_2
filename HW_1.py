@@ -1,22 +1,22 @@
-import time
 import functools
+import time
 
 
-def cache(N):
-    cache_obj = {}
+def cache(times):
 
-    @functools.wraps(N)
-    def cache_func(*args):
-        for i in args:
-            if i not in cache_obj:
-                cache_obj[i] = time.time()
+    def decorator(f):
+        cache_obj = {}
+
+        @functools.wraps(f)
+        def wrapper(*args):
+            if f not in cache_obj:
+                cache_obj[f] = time.time()
+                print(f"Data {f}, add in cache")
             else:
-                if time.time() - cache_obj[i] > N(*args):
-                    del cache_obj[i]
-                    return f"Data name "{i}", left time range"
-        return cache_obj
-    return cache_func
+                if time.time() - cache_obj[f] > times:
+                    del cache_obj[f]
+                    print(f"Data {f}, left time range")
+            return f(*args)
 
-@cache
-def N(time):
-    return time
+        return wrapper
+    return decorator
